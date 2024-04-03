@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>首页</title>
+    <link href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css" rel="stylesheet">
+    <link href="../../static/css/me.css" rel="stylesheet" th:href="@{/css/me.css}">
+    <link href="../../static/css/cityselect.css" rel="stylesheet" th:href="@{/css/cityselect.css}">
+    <link href="../../static/css/foundation-datepicker.css" rel="stylesheet"
+          th:href="@{/css/foundation-datepicker.css}">
+    <link href="http://www.jq22.com/jquery/font-awesome.4.6.0.css" rel="stylesheet">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<style>
+
+    #bottom {
+        position: fixed;
+        bottom: 0;
+        width: 100%; /* 让元素水平铺满整个页面 */
+
+        text-align: center; /* 文本居中 */
+    }
+    .title {
+        font-size: 40px; /* 设置h1标签的字体大小为24px */
+        margin-bottom: 20px;
+    }
+    .news-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* 垂直居中 */
+        justify-content: center; /* 水平居中 */
+        text-align: center; /* 内容居中 */
+    }
+
+    .content {
+        margin-top: 20px;
+        font-size: 20px;
+    }
+
+</style>
+<body>
+<!-- 导航 -->
+<div th:replace="~{default/navigation :: navigation}"></div>
+
+<div class="container bg-gray-eee box-shadow mar-bottom-30"
+     style="padding-right: 0px; padding-left: 0px; position: relative; margin-top: 120px;">
+    <a class="active m-item item m-mobile-hide" href="notice.html" th:href="@{/notice}"><i class="fas fa-arrow-left icon"></i>上一页</a>
+    <div class="news-container">
+        <h1 class="title" th:text="${notice.notice_name}"></h1>
+        <div  th:text="${#dates.format(notice.create_time,'yyyy-MM-dd HH:mm')}"></div>
+        <div class="content" th:text="${notice.text}"></div>
+    </div>
+</div>
+
+
+<!-- 底部 -->
+<div id="bottom">
+    <div th:replace="~{default/footer::footer}"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>首页</title>
+    <link href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css" rel="stylesheet">
+    <link href="../../static/css/me.css" rel="stylesheet" th:href="@{/css/me.css}">
+    <link href="../../static/css/cityselect.css" rel="stylesheet" th:href="@{/css/cityselect.css}">
+    <link href="../../static/css/foundation-datepicker.css" rel="stylesheet" th:href="@{/css/foundation-datepicker.css}">
+    <link href="http://www.jq22.com/jquery/font-awesome.4.6.0.css" rel="stylesheet">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<style>
+
+    #bottom {
+        position: fixed;
+        bottom: 0;
+        width: 100%; /* 让元素水平铺满整个页面 */
+
+        text-align: center; /* 文本居中 */
+    }
+    #wrapper {
+        height: 500px; /* 设置合适的固定高度 */
+        overflow-y: auto; /* 添加垂直滚动条 */
+    }
+    .citySelector {
+        /* 在这里添加你想要覆盖的样式属性 */
+        font:15px/1.5 tahoma,arial,\5b8b\4f53;
+    }
+    .datepicker-days{
+        font:15px/1.5 tahoma,arial,\5b8b\4f53;
+        width: 400px; /* 设置宽度 */
+        height: 400px; /* 设置高度 */
+    }
+
+    .datepicker table{
+        font:15px/1.5 tahoma,arial,\5b8b\4f53;
+        width: 400px; /* 设置宽度 */
+        height: 400px; /* 设置高度 */
+
+    }
+    h3.ui.teal.header {
+        color: #1890ff !important;
+    }
+    .ui.teal.segment:not(.inverted) {
+        border-top: 2px solid #1890ff
+    }
+    .ui.basic.teal.label {
+        color: #1890ff !important;
+        border-color:#1890ff !important;
+    }
+    .pagination {
+        margin-top: 1px;
+    }
+
+</style>
+<body>
+<!-- 导航 -->
+<div th:replace="~{default/navigation :: navigation}"></div>
+
+<!-- 查询机票 -->
+<div  style=" width: 350px;margin: 0 auto; ">
+    <div class="ui secondary segment" style="border-radius: 10px 10px 10px 10px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)" >
+        <div class="ui two column grid">
+            <div class="column" style="font-size: 15px;">
+                <i class="search icon" ></i>查询机票
+            </div>
+        </div>
+    </div>
+    <div class="ui teal segment" style="border-radius: 0 0 10px 10px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)">
+        <form action="#" method="POST" th:action="@{/getTrips}" style="font-size: 17px;">
+            <div class="ui">
+                <label class="ui compact teal basic label"style="font-size: 15px;">出发地点</label>
+                <input id="citySelect" name="StartStation" placeholder="北京" type="text">
+            </div>
+            <div class="ui m-margin-tb-large">
+                <label class="ui compact teal basic label" style="font-size: 15px;">到达地点</label>
+                <input id="citySelect2" name="EndStation" placeholder="上海" type="text">
+            </div>
+            <div class="ui m-margin-tb-large">
+                <label class="ui compact teal basic label" style="font-size: 15px;">出发日期</label>
+                <input id="startdate" name="date" type="text">
+            </div>
+            <button class="ui teal button" id="publish-btn" type="submit" style="display: block; margin: 0 auto; font-size: 18px; background-color: #1890ff">查询</button>
+        </form>
+    </div>
+</div>
+<div class="m-container1 m-padded-tb-large" style="margin: 0 auto;">
+
+    <div class="ui container" >
+
+        <div class="ui stackable grid" style="width: 1500px;">
+
+            <!-- 班次列表 -->
+            <div class="wide column" id="sometrips" style="width: 1150px; padding: 10px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+                <!-- header -->
+                <div class="ui top attached segment" style="border-radius: 10px 10px 0 0;">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header" style="font-size: 18px;">班次</h3>
+                        </div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="ui attached segment" style="border-radius: 0 0 10px 10px;">
+                    <table class="ui table" style="border-radius: 10px 10px 10px 10px;">
+                        <thead>
+                        <tr style="font-size: 13px;">
+                            <th>航班名</th>
+                            <th>起点</th>
+                            <th>终点</th>
+                            <th>出发时间</th>
+                            <th>到达时间</th>
+                            <th>商务舱票数</th>
+                            <th>经济舱票数</th>
+                            <th>&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="trips:${pageInfo?.getList()}" style="font-size: 13px;">
+                            <td th:text="${trips.trips_flight_name}"></td>
+                            <td th:text="${trips.trips_start_station_name}"></td>
+                            <td th:text="${trips.trips_end_station_name}"></td>
+                            <td th:text="${#dates.format(trips.trips_start_time, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td th:text="${#dates.format(trips.trips_end_time, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td th:text="${trips.business_class_seat_num}"></td>
+                            <td th:text="${trips.economy_class_seat_num}"></td>
+                            <td>
+                                <button><a href="confirm_order.html"
+                                           th:href="@{/user/confirm_order/}+${trips.trips_id}">预定</a></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--显示分页信息-->
+                <div class="modal-footer no-margin-top" th:if="${pageInfo!=null}" style="display: flex; ">
+                    <div style="flex: 1;">
+                        <div class="col-md-6" style="margin-top:8px ;font-size: 15px; float: none; text-align: center;">
+                            当前第 [[${pageInfo?.getPageNum()}]]页,共 [[${pageInfo?.getPages()}]] 页.一共
+                            [[${pageInfo?.getTotal()}]] 条记录
+                        </div>
+                    </div>
+
+                    <ul class="pagination pull-right no-margin" style="font-size: 18px;">
+                        <li th:if="${!pageInfo?.isIsFirstPage()}">
+                            <a th:href="'/getTrips?pageNum=1'">首页</a>
+                        </li>
+
+                        <li class="prev" th:if="${pageInfo?.isHasPreviousPage()}">
+                            <a th:href="'/getTrips?pageNum='+${pageInfo.getPrePage()}">
+                                <i class="ace-icon fa fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <!--遍历条数-->
+                        <li th:each="nav:${pageInfo?.getNavigatepageNums()}">
+                            <a th:href="'/getTrips?pageNum='+${nav}" th:if="${nav != pageInfo.getPageNum()}"
+                               th:text="${nav}"></a>
+                            <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.getPageNum()}"
+                                  th:text="${nav}"></span>
+                        </li>
+
+                        <li class="next" th:if="${pageInfo?.isHasNextPage()}">
+                            <a th:href="'/getTrips?pageNum='+${pageInfo.getNextPage()}">
+                                <i class="ace-icon fa fa-angle-double-right"></i>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a th:href="'/getTrips?pageNum='+${pageInfo?.getPages()}">尾页</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- 底部 -->
+<div id="bottom">
+    <div th:replace="~{default/footer::footer}"></div>
+</div>
+
+<script src="../../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="../../static/js/cityselect.js" th:src="@{/js/cityselect.js}"></script>
+<script src="../../static/js/foundation-datepicker.js" th:src="@{/js/foundation-datepicker.js}"></script>
+<script src="../../static/js/foundation-datepicker.zh-CN.js" th:src="@{/js/foundation-datepicker.zh-CN.js}"></script>
+
+<script>
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+
+    $(function () {
+        //城市选择
+        var test=new Vcity.CitySelector({input:'citySelect'});
+        var test2=new Vcity.CitySelector({input:'citySelect2'});
+        //日期选择
+        var nowTemp = new Date();
+        var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+
+        $('#startdate').fdatepicker({
+            onRender: function (date) {
+                return date.valueOf() < now.valueOf() ? 'disabled' : '';},
+            format:'yyyy-mm-dd'
+        }).data('datepicker');
+    })
+
+</script>
+</body>
+</html>
